@@ -110,7 +110,7 @@ export default function Component() {
     setIsSubmitting(true);
     try {
       // In your actual app, uncomment this:
-      await fetch(`${API_URL}/blogs`, {
+      const res = await fetch(`${API_URL}/blogs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,6 +123,10 @@ export default function Component() {
 
       setSuccessMessage("Blog created successfully!");
       resetForm();
+
+      if (res.ok) {
+        router.push("/blogs");
+      }
     } catch (err: any) {
       console.error("Failed to create blog:", err);
     } finally {
@@ -135,7 +139,10 @@ export default function Component() {
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <header className="mb-8">
-          <button className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
+          <button
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            onClick={() => router.push("/blogs")}
+          >
             <ArrowLeft className="w-4 h-4" />
             Back to Blogs
           </button>
