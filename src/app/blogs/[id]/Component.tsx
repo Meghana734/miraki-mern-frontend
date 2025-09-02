@@ -12,6 +12,8 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface BlogForm {
   title: string;
@@ -44,29 +46,20 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const router = useRouter();
+
   // Mock data for demonstration
   useEffect(() => {
     async function fetchBlog() {
       setIsLoading(true);
       try {
         // In your actual app, replace this with your API call:
-        const res = await fetch(`${API_URL}/blogs/${id}`);
-        const data = await res.json();
+        const res = await axios.get(`${API_URL}/blogs/${id}`);
 
         // Simulating API call with delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Mock data
-        const mockData = {
-          title: "Getting Started with React Hooks",
-          content:
-            "React Hooks are a powerful feature that allows you to use state and other React features without writing a class component. In this comprehensive guide, we'll explore the most commonly used hooks and learn how to implement them in your applications. We'll start with useState, which is the most basic hook for managing local state in functional components.",
-          email: "john.doe@example.com",
-          phonenumber: "1234567890",
-          author: "John Doe",
-        };
-
-        setFormData(mockData);
+        setFormData(res.data);
       } catch (err: any) {
         console.error("Failed to load blog:", err);
       } finally {
@@ -138,7 +131,8 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setSuccessMessage("Blog updated successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
+
+      router.push("/blogs");
     } catch (err: any) {
       console.error("Failed to update blog:", err);
     } finally {
@@ -167,7 +161,10 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <header className="mb-8">
-          <button className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
+          <button
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            onClick={() => router.push("/blogs")}
+          >
             <ArrowLeft className="w-4 h-4" />
             Back to Blogs
           </button>
