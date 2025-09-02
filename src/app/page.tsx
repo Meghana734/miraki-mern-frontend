@@ -13,11 +13,6 @@ export default function Home() {
           View Blogs
         </a>
       </div>
-      
-      {/* Test div to verify Tailwind is working */}
-      <div className="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg">
-        Tailwind Test - If you see this styled, Tailwind is working!
-      </div>
     </div>
   );
 }
