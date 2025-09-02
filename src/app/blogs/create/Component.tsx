@@ -1,6 +1,18 @@
 "use client";
 import { useState } from "react";
-import { ArrowLeft, Plus, Loader2, User, Mail, Phone, FileText, PenTool, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Loader2,
+  User,
+  Mail,
+  Phone,
+  FileText,
+  PenTool,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface BlogForm {
   title: string;
@@ -18,17 +30,21 @@ interface FormErrors {
   author?: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_BLOGS;
+
 export default function Component() {
   const [formData, setFormData] = useState<BlogForm>({
     title: "",
     content: "",
     email: "",
     phonenumber: "",
-    author: ""
+    author: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  const router = useRouter();
 
   const validateForm = (data: BlogForm): FormErrors => {
     const newErrors: FormErrors = {};
@@ -59,10 +75,10 @@ export default function Component() {
   };
 
   const handleInputChange = (field: keyof BlogForm, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
     // Clear success message when form is modified
     if (successMessage) {
@@ -76,7 +92,7 @@ export default function Component() {
       content: "",
       email: "",
       phonenumber: "",
-      author: ""
+      author: "",
     });
     setErrors({});
     setSuccessMessage("");
@@ -92,24 +108,24 @@ export default function Component() {
     setIsSubmitting(true);
     try {
       // In your actual app, uncomment this:
-      // await fetch(`${API_URL}/blogs`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-      
+      await fetch(`${API_URL}/blogs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       setSuccessMessage("Blog created successfully!");
       resetForm();
-      
+
       // In your actual app, uncomment this for navigation:
-      // setTimeout(() => {
-      //   router.push("/blogs");
-      // }, 1000);
+      setTimeout(() => {
+        router.push("/blogs");
+      }, 1000);
     } catch (err: any) {
       console.error("Failed to create blog:", err);
     } finally {
@@ -126,15 +142,19 @@ export default function Component() {
             <ArrowLeft className="w-4 h-4" />
             Back to Blogs
           </button>
-          
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <PenTool className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Create New Blog Post</h1>
-                <p className="text-gray-600">Share your thoughts and ideas with the world</p>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Create New Blog Post
+                </h1>
+                <p className="text-gray-600">
+                  Share your thoughts and ideas with the world
+                </p>
               </div>
             </div>
           </div>
@@ -147,7 +167,9 @@ export default function Component() {
               <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
               <div>
                 <p className="text-green-800 font-medium">{successMessage}</p>
-                <p className="text-green-700 text-sm">You can create another blog post or go back to the blog list.</p>
+                <p className="text-green-700 text-sm">
+                  You can create another blog post or go back to the blog list.
+                </p>
               </div>
             </div>
           </div>
@@ -164,11 +186,11 @@ export default function Component() {
             <input
               type="text"
               value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
+              onChange={(e) => handleInputChange("title", e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.title 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.title
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2`}
               placeholder="Enter an engaging title for your blog post..."
             />
@@ -188,12 +210,12 @@ export default function Component() {
             </label>
             <textarea
               value={formData.content}
-              onChange={(e) => handleInputChange('content', e.target.value)}
+              onChange={(e) => handleInputChange("content", e.target.value)}
               rows={10}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.content 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.content
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2 resize-vertical`}
               placeholder="Write your blog content here... Share your insights, experiences, and knowledge with your readers."
             />
@@ -218,11 +240,11 @@ export default function Component() {
               <input
                 type="text"
                 value={formData.author}
-                onChange={(e) => handleInputChange('author', e.target.value)}
+                onChange={(e) => handleInputChange("author", e.target.value)}
                 className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                  errors.author 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                  errors.author
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                 } focus:outline-none focus:ring-2`}
                 placeholder="Your full name"
               />
@@ -242,11 +264,11 @@ export default function Component() {
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                  errors.email 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                  errors.email
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                 } focus:outline-none focus:ring-2`}
                 placeholder="your.email@example.com"
               />
@@ -268,11 +290,11 @@ export default function Component() {
             <input
               type="tel"
               value={formData.phonenumber}
-              onChange={(e) => handleInputChange('phonenumber', e.target.value)}
+              onChange={(e) => handleInputChange("phonenumber", e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.phonenumber 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.phonenumber
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2`}
               placeholder="1234567890"
             />
@@ -301,9 +323,9 @@ export default function Component() {
               disabled={isSubmitting}
               onClick={handleSubmit}
               className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
-                isSubmitting 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-green-600 hover:bg-green-700'
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
               }`}
             >
               {isSubmitting ? (
@@ -323,7 +345,9 @@ export default function Component() {
 
         {/* Tips Section */}
         <div className="mt-8 bg-blue-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">📝 Writing Tips</h3>
+          <h3 className="text-lg font-semibold text-blue-900 mb-3">
+            📝 Writing Tips
+          </h3>
           <ul className="space-y-2 text-blue-800">
             <li className="flex items-start gap-2">
               <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>

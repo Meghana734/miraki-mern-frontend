@@ -1,6 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Loader2, User, Mail, Phone, FileText, Edit3, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Loader2,
+  User,
+  Mail,
+  Phone,
+  FileText,
+  Edit3,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 
 interface BlogForm {
   title: string;
@@ -18,13 +29,15 @@ interface FormErrors {
   author?: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_BLOGS;
+
 export default function Component({ id = "sample-blog-id" }: { id?: string }) {
   const [formData, setFormData] = useState<BlogForm>({
     title: "",
     content: "",
     email: "",
     phonenumber: "",
-    author: ""
+    author: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -37,21 +50,22 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
       setIsLoading(true);
       try {
         // In your actual app, replace this with your API call:
-        // const res = await fetch(`${API_URL}/blogs/${id}`);
-        // const data = await res.json();
-        
+        const res = await fetch(`${API_URL}/blogs/${id}`);
+        const data = await res.json();
+
         // Simulating API call with delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Mock data
         const mockData = {
           title: "Getting Started with React Hooks",
-          content: "React Hooks are a powerful feature that allows you to use state and other React features without writing a class component. In this comprehensive guide, we'll explore the most commonly used hooks and learn how to implement them in your applications. We'll start with useState, which is the most basic hook for managing local state in functional components.",
+          content:
+            "React Hooks are a powerful feature that allows you to use state and other React features without writing a class component. In this comprehensive guide, we'll explore the most commonly used hooks and learn how to implement them in your applications. We'll start with useState, which is the most basic hook for managing local state in functional components.",
           email: "john.doe@example.com",
           phonenumber: "1234567890",
-          author: "John Doe"
+          author: "John Doe",
         };
-        
+
         setFormData(mockData);
       } catch (err: any) {
         console.error("Failed to load blog:", err);
@@ -91,10 +105,10 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
   };
 
   const handleInputChange = (field: keyof BlogForm, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
     // Clear success message when form is modified
     if (successMessage) {
@@ -103,7 +117,6 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
   };
 
   const handleSubmit = async () => {
-    
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -113,17 +126,17 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
     setIsSubmitting(true);
     try {
       // In your actual app, uncomment this:
-      // await fetch(`${API_URL}/blogs/${id}`, {
-      //   method: 'PATCH',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-      
+      await fetch(`${API_URL}/blogs/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       setSuccessMessage("Blog updated successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err: any) {
@@ -138,8 +151,12 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-white rounded-lg shadow-sm p-8 text-center max-w-md w-full mx-4">
           <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading Blog</h3>
-          <p className="text-gray-600">Please wait while we fetch the blog details...</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Loading Blog
+          </h3>
+          <p className="text-gray-600">
+            Please wait while we fetch the blog details...
+          </p>
         </div>
       </div>
     );
@@ -154,15 +171,19 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
             <ArrowLeft className="w-4 h-4" />
             Back to Blogs
           </button>
-          
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Edit3 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Update Blog Post</h1>
-                <p className="text-gray-600">Edit your blog post details below</p>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Update Blog Post
+                </h1>
+                <p className="text-gray-600">
+                  Edit your blog post details below
+                </p>
               </div>
             </div>
           </div>
@@ -189,11 +210,11 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
             <input
               type="text"
               value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
+              onChange={(e) => handleInputChange("title", e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.title 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.title
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2`}
               placeholder="Enter your blog title..."
             />
@@ -213,12 +234,12 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
             </label>
             <textarea
               value={formData.content}
-              onChange={(e) => handleInputChange('content', e.target.value)}
+              onChange={(e) => handleInputChange("content", e.target.value)}
               rows={8}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.content 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.content
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2 resize-vertical`}
               placeholder="Write your blog content here..."
             />
@@ -240,11 +261,11 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
               <input
                 type="text"
                 value={formData.author}
-                onChange={(e) => handleInputChange('author', e.target.value)}
+                onChange={(e) => handleInputChange("author", e.target.value)}
                 className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                  errors.author 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                  errors.author
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                 } focus:outline-none focus:ring-2`}
                 placeholder="Author name"
               />
@@ -264,11 +285,11 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                  errors.email 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                  errors.email
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                 } focus:outline-none focus:ring-2`}
                 placeholder="author@example.com"
               />
@@ -290,11 +311,11 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
             <input
               type="tel"
               value={formData.phonenumber}
-              onChange={(e) => handleInputChange('phonenumber', e.target.value)}
+              onChange={(e) => handleInputChange("phonenumber", e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                errors.phonenumber 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                errors.phonenumber
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
               } focus:outline-none focus:ring-2`}
               placeholder="1234567890"
             />
@@ -319,9 +340,9 @@ export default function Component({ id = "sample-blog-id" }: { id?: string }) {
               disabled={isSubmitting}
               onClick={handleSubmit}
               className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
-                isSubmitting 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               {isSubmitting ? (
