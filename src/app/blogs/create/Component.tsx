@@ -63,8 +63,10 @@ export default function Component() {
       newErrors.email = "Invalid email format";
     }
 
-    if (data.phonenumber && !/^[0-9]{10,15}$/.test(data.phonenumber)) {
+    if (!data.phonenumber?.trim()) {
       newErrors.phonenumber = "Phone number must be 10–15 digits";
+    } else if (!/^[0-9]{10,15}$/.test(data.phonenumber)) {
+      newErrors.email = "Invalid email format";
     }
 
     if (!data.author.trim()) {
@@ -121,11 +123,6 @@ export default function Component() {
 
       setSuccessMessage("Blog created successfully!");
       resetForm();
-
-      // In your actual app, uncomment this for navigation:
-      setTimeout(() => {
-        router.push("/blogs");
-      }, 1000);
     } catch (err: any) {
       console.error("Failed to create blog:", err);
     } finally {
